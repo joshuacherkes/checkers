@@ -1,4 +1,5 @@
 require './piece.rb'
+# REV=> like Jonathan said, can use require_relative
 require './humanplayer.rb'
 require 'debugger'
 require 'colored'
@@ -14,6 +15,7 @@ class Board
 	end
 
  def run
+    # REV=> maybe players should be assigned in the initialize method?
     @players = [HumanPlayer.new(self, :white), HumanPlayer.new(self, :black)]
     loop do
      
@@ -23,6 +25,7 @@ class Board
           display
           player.take_turn
         rescue StandardError => e
+          # REV=> don't need to interpolate neccessarily
           puts "#{e.message}"
           retry
         end
@@ -39,10 +42,12 @@ class Board
 
   def put_in_notation(array)
     array.each_index { |row| array[row].unshift(8 - row) }
+    # REV=> (" a ".." h ").to_a) == Array(" a ".." h ")
     array.unshift([" "] + (" a ".." h ").to_a)
   end
 
   def chess_chars
+    # REV=> same as: Array.new(8){ Array.new(8) {nil} }
     array = (0...8).map { [nil] * 8 }
 
     @board.each_index do |row|
@@ -59,11 +64,14 @@ class Board
   end
 
   def colorize(piece, background)
+    # REV=> This should be in your piece class, and it could also
+    # REV=> be done in a to_s method within the piece class, so that 
+    # REV=> when you call "puts" you will automatically format it 
+    # REV=> since "puts" calls "to_s"
     char_hash = {
       Piece => " ♔ ",
       NilClass => "   "
     }
-
     if piece.nil? || piece.color == :white
       char_hash[piece.class].send("magenta_on_#{background}".to_sym)
     else
@@ -76,6 +84,9 @@ class Board
     [0,1,2].each do |num|
       board[num].each_index do |i|
         if num % 2 == 0 && i % 2 == 0
+          # REV=> note that since you've already used attr_accessor
+          # REV=> on the instance variable "board," you no longer
+          # REV=> need to reference it with the @ symbol
            @board[num][i] = Piece.new(self, :black, [num, i])
        elsif num % 2 != 0 && i % 2 != 0
           @board[num][i] = Piece.new(self, :black, [num, i])
@@ -115,11 +126,15 @@ class Board
 
 
   def occupied?(dest)
+    # REV=> methods with a question mark should be returning
+    # REV=> true and false only, like you have in the method 
+    # REV=> on_board? below
     return if @board[dest[0]][dest[1]] == nil
     (@board[dest[0]][dest[1]]).color
   end
 
   def on_board?(dest)
+    # REV=> more concise as: el.between?(0,7)
     dest.all?{ |el| el <= 7 && el >= 0 }
   end
 

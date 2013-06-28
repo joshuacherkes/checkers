@@ -50,6 +50,10 @@ class Piece
 
     def subtract_jumped_piece(piece)
       if @game.board[piece[0]][piece[1]].color == :black
+        # REV=> I see that the pieces belong to the players
+        # REV=> but, I would prefer the pieces to belong to 
+        # REV=> the board, and for the players to tell the
+        # REV=> board to move or remove pieces
         @game.players[1].pieces -= 1
       elsif @game.board[piece[0]][piece[1]].color == :white
         @game.players[0].pieces -= 1
@@ -57,6 +61,13 @@ class Piece
     end
 
     def valid_move_seq?(moves)
+      # REV=> Valid approach, but you could only dup the piece
+      # REV=> object if you wanted to be more conservative, since
+      # REV=> each piece has a certain coordinate, it itself doesn't
+      # REV=> need to be on the pictorial representation of the board
+      # REV=> in order to see what moves it can do (although it would
+      # REV=> need to be on it if other pieces needed to move relative to it)
+      # REV=> but still, whatever works
       game = @game.dup
       begin
         perform_moves!(moves)
@@ -70,6 +81,7 @@ class Piece
     end
 
     def perform_moves(moves)
+      # REV=> I like the distributed error messages
       raise InvalidMoveError, "invalid moves" unless valid_move_seq?(moves)
       perform_moves!(moves)
     end

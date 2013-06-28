@@ -6,6 +6,7 @@ class HumanPlayer
 
 	def initialize(game, color)
 		@game = game
+		# REV=> could just specify the color as a symbol in the first place?
 		@color = color.to_sym
 		@pieces = 12
 	end
@@ -23,6 +24,7 @@ class HumanPlayer
 	end
 
   def lost?
+  	# REV=> Don't need the true if here, == already produces true/false
     true if self.pieces == 0
   end
 
